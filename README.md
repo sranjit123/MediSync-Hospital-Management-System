@@ -61,7 +61,7 @@ pip install -r requirements.txt
 ```bash
 python manage.py runserver
 ```
-Visit `http://127.0.0.1:8000` in your browser.
+Visit `http://127.0.0.1:8000` in browser.
 
 ---
 
@@ -71,5 +71,4 @@ Visit `http://127.0.0.1:8000` in your browser.
 - `/templates`: Semantic HTML5 templates organized by user role.
 - `/media`: Profiles and medical record uploads (Git-ignored).
 
-## 📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+
