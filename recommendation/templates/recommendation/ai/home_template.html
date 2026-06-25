@@ -1,0 +1,55 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/public.css' %}">
+
+<section class="hero-section animate-fade" style="padding: 4rem 2rem; text-align: center;">
+    <h1 style="font-size: 3rem; color: var(--primary); font-weight: 800; margin-bottom: 1.5rem;">AI-Driven Specialist Referral</h1>
+    <p class="text-muted" style="max-width: 600px; margin: 0 auto 3rem; font-size: 1.1rem;">Describe your health concerns in plain language. Our neural algorithm will bridge the gap between your symptoms and clinical expertise.</p>
+
+    <div class="card search-card" style="max-width: 800px; margin: 0 auto; padding: 3rem; text-align: left;">
+        <form method="post" action="{% url 'home' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="symptoms" class="form-label" style="font-size: 1.1rem; margin-bottom: 1rem;">Symptom Description</label>
+                <textarea id="symptoms" name="symptoms" rows="5" class="form-control" placeholder="e.g. Sharp pain in lower back radiating to legs, accompanied by mild fever..." style="font-size: 1.1rem; line-height: 1.6;"></textarea>
+                <small class="text-muted">The more detail you provide, the higher the recommendation accuracy.</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.5rem; font-size: 1.1rem; margin-top: 1rem;">Execute Diagnostic Search</button>
+        </form>
+    </div>
+</section>
+
+<section class="info-grid animate-fade" style="margin-top: 5rem; padding: 4rem 2rem; background: #f8fafc; border-radius: 2rem;">
+    <div style="text-align: center; margin-bottom: 3.5rem;">
+        <h2 style="color: var(--text-main);">The Algorithmic Process</h2>
+        <p class="text-muted">Our system uses TF-IDF and Cosine Similarity to ensure clinical relevance.</p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5rem;">
+        <div style="text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">✍️</div>
+            <h4 style="margin-bottom: 0.75rem;">Input</h4>
+            <p class="text-muted" style="font-size: 0.85rem;">Capture symptoms in natural language.</p>
+        </div>
+        <div style="text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🧠</div>
+            <h4 style="margin-bottom: 0.75rem;">Analysis</h4>
+            <p class="text-muted" style="font-size: 0.85rem;">Neural weights applied via scikit-learn.</p>
+        </div>
+        <div style="text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎯</div>
+            <h4 style="margin-bottom: 0.75rem;">Matching</h4>
+            <p class="text-muted" style="font-size: 0.85rem;">Best-fit clinical unit identified.</p>
+        </div>
+        <div style="text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🗓️</div>
+            <h4 style="margin-bottom: 0.75rem;">Resolution</h4>
+            <p class="text-muted" style="font-size: 0.85rem;">Instant specialist booking access.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

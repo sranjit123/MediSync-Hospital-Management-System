@@ -1,0 +1,35 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/patient.css' %}">
+
+<section class="admin-form-container animate-fade">
+    <div class="card result-card" style="text-align: center; padding: 4rem 2rem;">
+        <div class="success-icon" style="font-size: 5rem; color: var(--success); margin-bottom: 2rem;">✔️</div>
+        <h2 style="color: var(--success); margin-bottom: 1rem;">Booking Confirmed!</h2>
+        <p class="text-muted" style="margin-bottom: 3rem;">Your consultation request has been successfully registered in our system.</p>
+
+        <div class="summary-details glass-card" style="display: inline-block; text-align: left; padding: 2.5rem; margin-bottom: 3rem; border: 1px solid #e2e8f0; width: 100%; max-width: 500px;">
+            <h4 style="margin-top: 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1.5rem;">Appointment Details</h4>
+            <div style="display: grid; gap: 1rem;">
+                <p style="margin: 0;"><strong>Patient:</strong> <span class="text-muted">{{appointment.patient_name}}</span></p>
+                <p style="margin: 0;"><strong>Specialist:</strong> <span class="text-muted">Dr. {{appointment.doctor.name}}</span></p>
+                <p style="margin: 0;"><strong>Scheduled Date:</strong> <span class="badge badge-info">{{appointment.appointment_date}}</span></p>
+                <p style="margin: 0;"><strong>Preferred time:</strong> <span class="text-muted">{{appointment.appointment_time}}</span></p>
+                <p style="margin: 0;"><strong>Clinical Unit:</strong> <span class="text-muted">{{appointment.doctor.department.name}}</span></p>
+            </div>
+        </div>
+
+        <p class="text-muted" style="font-size: 0.9rem; font-style: italic; margin-bottom: 2.5rem;">
+            Please arrive at the clinic at least 15 minutes prior to your slot for check-in.
+        </p>
+
+        <div class="action-btns" style="justify-content: center;">
+            <a href="{% url 'patient_dashboard' %}" class="btn btn-primary">Go to My Dashboard</a>
+            <a href="{% url 'landing' %}" class="btn btn-outline">Return to Homepage</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/admin.css' %}">
+
+<div class="dashboard-header animate-fade">
+    <div class="header-left">
+        <h2 style="margin: 0;">Onboard New Patient</h2>
+        <p class="text-muted">Create a secure medical record and login identity for a new patient.</p>
+    </div>
+    <div class="header-right">
+        <a href="{% url 'admin_patients' %}" class="btn btn-outline">Back to Records</a>
+    </div>
+</div>
+
+<section class="admin-form-container animate-fade">
+    <div class="card" style="padding: 3rem; max-width: 600px; margin: 0 auto;">
+        <h3 style="margin-top: 0; margin-bottom: 2.5rem; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 1rem;">Primary Record Details</h3>
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="full_name" class="form-label">Patient Full Name</label>
+                <input type="text" id="full_name" name="full_name" required placeholder="e.g. Jane Smith" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="username" class="form-label">System Username</label>
+                <input type="text" id="username" name="username" required placeholder="unique_identifier" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Contact Email</label>
+                <input type="email" id="email" name="email" required placeholder="jane.smith@example.com" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Secure Password</label>
+                <input type="password" id="password" name="password" required placeholder="••••••••" class="form-control">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 3rem;">
+                <label for="image" class="form-label">Identity Verification Photo</label>
+                <input type="file" id="image" name="image" accept="image/*" class="form-control" style="padding-top: 0.6rem;">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.25rem; font-size: 1.1rem;">Generate Patient Identity</button>
+        </form>
+    </div>
+</section>
+
+<div id="form-data" data-error="{{ error|default:'' }}" style="display: none;"></div>
+
+<script>
+    window.onload = function () {
+        const error = document.getElementById('form-data').dataset.error;
+        if (error) {
+            alert('Operation Denied: ' + error);
+        }
+    };
+</script>
+
+<script>
+    window.onload = function () {
+        const error = document.getElementById('form-data').dataset.error;
+        if (error) {
+            alert(error);
+        }
+    };
+</script>
+{% endblock %}

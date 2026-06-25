@@ -1,0 +1,92 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/public.css' %}">
+
+<div class="dashboard-header animate-fade">
+    <div class="header-left">
+        <h2 style="margin: 0;">AI Diagnostic Result</h2>
+        {% if not error %}
+        <p class="text-muted">Based on your symptoms, we've identified the most suitable clinical unit.</p>
+        {% endif %}
+    </div>
+    <div class="header-right">
+        <a href="{% url 'landing' %}" class="btn btn-outline">Back to Home</a>
+    </div>
+</div>
+
+<div class="card result-card animate-fade {% if error %}border-error{% else %}border-success{% endif %}" style="padding: 4rem; margin-top: 2rem;">
+    {% if error %}
+    <div style="text-align: center; padding: 2rem;">
+        <div style="font-size: 4rem; margin-bottom: 2rem; color: var(--danger);">⚠️</div>
+        <h2 style="color: var(--danger);">Unable to Match Symptoms</h2>
+        <p class="text-muted" style="margin-bottom: 2.5rem;">We couldn't find a high-confidence department match for "<strong>{{ symptoms }}</strong>".</p>
+        <p class="text-muted" style="margin-bottom: 3rem;">Recommendation: Try searching using more common medical terms or specific symptom keywords (e.g. "chest pain", "blurred vision").</p>
+        <a href="{% url 'landing' %}" class="btn btn-primary" style="padding: 1.25rem 2.5rem;">New Search</a>
+    </div>
+    {% else %}
+    
+    <div class="department-highlight" style="text-align: center; margin-bottom: 5rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 4rem;">
+        <span class="badge badge-info" style="margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 2px;">Optimal Match</span>
+        <h1 style="font-size: 3.5rem; margin: 0; color: var(--primary); font-weight: 800;">{{department.name}}</h1>
+        <p class="text-muted" style="max-width: 700px; margin: 1.5rem auto 0; font-size: 1.1rem; line-height: 1.7;">{{ department.description }}</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;">
+        <!-- Specialist Panel -->
+        <div class="col">
+            <h3 style="margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+                👨‍⚕️ Available Specialists
+            </h3>
+            {% if doctors %}
+            <div style="display: grid; gap: 1.25rem;">
+                {% for doctor in doctors %}
+                <div class="glass-card" style="padding: 1.5rem; border: 1px solid #f1f5f9; border-left: 4px solid var(--primary);">
+                    <div style="font-weight: 700; color: var(--text-main); font-size: 1.1rem;">Dr. {{ doctor.name }}</div>
+                    <div class="text-muted" style="font-size: 0.85rem; margin-bottom: 0.75rem;">{{doctor.specialization}}</div>
+                    <div style="font-size: 0.8rem; display: flex; align-items: center; gap: 0.5rem;" class="text-muted">
+                        📅 {{ doctor.availability }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div style="padding: 3rem; background: #f8fafc; border-radius: 1rem; text-align: center;" class="text-muted">
+                No specialists listed for this unit today.
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Diseases Panel -->
+        <div class="col">
+            <h3 style="margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+                🔍 Related Medical Cases
+            </h3>
+            {% if related_diseases %}
+            <div style="display: grid; gap: 1.25rem;">
+                {% for disease in related_diseases %}
+                <div class="glass-card" style="padding: 1.5rem; border: 1px solid #f1f5f9;">
+                    <div style="font-weight: 700; color: var(--text-main);">{{ disease.name }}</div>
+                    <div class="text-muted" style="font-size: 0.8rem; margin-top: 0.5rem; line-height: 1.5;">
+                        <strong>Symptoms:</strong> {{ disease.symptoms|truncatechars:120 }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div style="padding: 3rem; background: #f8fafc; border-radius: 1rem; text-align: center;" class="text-muted">
+                No specific disease correlations found.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="action-btns" style="margin-top: 5rem; justify-content: center; gap: 2rem; border-top: 1px solid #f1f5f9; padding-top: 3rem;">
+        <a href="{% url 'book_appointment' department.id %}" class="btn btn-primary" style="padding: 1.25rem 3rem; font-size: 1.1rem;">Instant Appointment Booking</a>
+        <a href="{% url 'landing' %}" class="btn btn-outline" style="padding: 1.25rem 3rem;">New Symptom Search</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

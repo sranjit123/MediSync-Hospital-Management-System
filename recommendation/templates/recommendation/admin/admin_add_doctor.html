@@ -1,0 +1,97 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/admin.css' %}">
+
+<div class="dashboard-header animate-fade">
+    <div class="header-left">
+        <h2 style="margin: 0;">Register Specialist</h2>
+        <p class="text-muted">Create a new medical professional account with department mapping.</p>
+    </div>
+    <div class="header-right">
+        <a href="{% url 'admin_doctors' %}" class="btn btn-outline">Back to Directory</a>
+    </div>
+</div>
+
+<section class="admin-form-container animate-fade">
+    <div class="card" style="padding: 3rem; max-width: 800px; margin: 0 auto;">
+        <h3 style="margin-top: 0; margin-bottom: 2.5rem; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 1rem;">Specialist Credentials</h3>
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label for="full_name" class="form-label">Legal Full Name</label>
+                    <input type="text" id="full_name" name="full_name" required placeholder="e.g. Dr. Johnathan Doe" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="username" class="form-label">Login Username</label>
+                    <input type="text" id="username" name="username" required placeholder="assigned_id" class="form-control">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Identity</label>
+                    <input type="email" id="email" name="email" required placeholder="doctor@hospital.com" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Initial Access Password</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="department" class="form-label">Clinical Department</label>
+                <select id="department" name="department" required class="form-control">
+                    <option value="" disabled selected>Select assigned unit...</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.id }}">{{ dept.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="specialization" class="form-label">Medical Specialization</label>
+                <input type="text" id="specialization" name="specialization" required placeholder="e.g. Interventional Cardiology" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="availability" class="form-label">Official Schedule / Hours</label>
+                <input type="text" id="availability" name="availability" required placeholder="e.g. Mon-Fri, 08:00 AM - 04:00 PM" class="form-control">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 3rem;">
+                <label for="image" class="form-label">Profile Visualization (Photo)</label>
+                <input type="file" id="image" name="image" accept="image/*" class="form-control" style="padding-top: 0.6rem;">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.25rem; font-size: 1.1rem;">Finalize Registration</button>
+        </form>
+    </div>
+</section>
+
+<div id="form-data" data-error="{{ error|default:'' }}" style="display: none;"></div>
+
+<script>
+    window.onload = function () {
+        const error = document.getElementById('form-data').dataset.error;
+        if (error) {
+            alert('Registration Failed: ' + error);
+        }
+    };
+</script>
+
+<script>
+    // Show errors in popup if any
+    window.onload = function () {
+        const error = document.getElementById('form-data').dataset.error;
+        if (error) {
+            alert(error);
+        }
+    };
+</script>
+{% endblock %}

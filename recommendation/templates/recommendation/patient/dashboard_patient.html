@@ -1,0 +1,90 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/patient.css' %}">
+
+<div class="patient-welcome animate-fade">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.5rem;">
+        <div>
+            <h2 style="margin: 0;">Welcome, {{ user.full_name }}</h2>
+            <p class="text-muted">How can we help you today?</p>
+        </div>
+        <div class="action-btns">
+            <a href="{% url 'find_specialist' %}" class="btn btn-primary" style="box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);">🔍 AI Symptom Checker</a>
+            <a href="{% url 'appointment_history' %}" class="btn btn-outline">📋 My Appointments</a>
+        </div>
+    </div>
+</div>
+
+<div class="patient-dashboard-grid animate-fade">
+    <div class="main-content">
+        <!-- Search Section -->
+        <section class="card glass-card search-section">
+            <form method="GET" action="{% url 'patient_dashboard' %}" style="display: flex; gap: 1rem;">
+                <div style="flex: 1; position: relative;">
+                    <input type="text" name="q" value="{{ query }}" placeholder="Search specialists or departments..." class="form-control" style="margin-bottom: 0;">
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+                {% if query %}
+                <a href="{% url 'patient_dashboard' %}" class="btn btn-outline">Clear</a>
+                {% endif %}
+            </form>
+        </section>
+
+        <!-- Browse Doctors -->
+        {% for item in dept_doctors %}
+        <div class="dept-group" style="margin-bottom: 3.5rem;">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                <h4 style="margin: 0; color: var(--primary);">{{ item.name }} Department</h4>
+                <span class="badge badge-info">{{ item.doctors|length }} Doctors</span>
+            </div>
+            
+            <div class="doctor-scroller">
+                {% for doctor in item.doctors %}
+                <div class="card mini-doctor-card animate-fade">
+                    <div class="mini-doctor-image">
+                        {% if doctor.image %}
+                        <img src="{{ doctor.image.url }}" alt="{{ doctor.full_name }}" class="doctor-img">
+                        {% else %}
+                        <span style="font-size: 3rem;">👨‍⚕️</span>
+                        {% endif %}
+                    </div>
+                    <div class="mini-doctor-info">
+                        <h5 style="margin: 0;">Dr. {{ doctor.full_name }}</h5>
+                        <p style="color: var(--primary); font-weight: 600; font-size: 0.85rem; margin: 0.25rem 0;">{{doctor.specialization}}</p>
+                        <p class="text-muted" style="font-size: 0.75rem;"><span style="margin-right: 0.5rem;">📅</span>{{ doctor.availability }}</p>
+                        <a href="{% url 'book_appointment' item.id %}" class="btn btn-primary btn-small" style="width: 100%; margin-top: 1rem;">Book Consultation</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted" style="font-style: italic;">No specific matches in this department.</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="card" style="text-align: center; padding: 4rem;">
+            <p class="text-muted">No doctors found matching your search criteria.</p>
+            <a href="{% url 'patient_dashboard' %}" class="btn btn-outline" style="margin-top: 1rem;">View All Specialists</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <aside class="sidebar-content animate-fade">
+        <div class="card" style="padding: 1.5rem; background: var(--text-main); color: white; border: none;">
+            <h3 style="color: white; margin-top: 0;">Quick Tips</h3>
+            <p style="font-size: 0.9rem; opacity: 0.8; line-height: 1.6;">
+                Use the <strong>AI Assistant</strong> to find the right department based on your symptoms before booking.
+            </p>
+            <a href="{% url 'find_specialist' %}" class="btn btn-primary btn-small" style="background: white; color: var(--text-main); width: 100%;">Start AI Check</a>
+        </div>
+        
+        <div class="card" style="margin-top: 1.5rem; padding: 1.5rem;">
+            <h4 style="margin-top: 0;">Need Help?</h4>
+            <p class="text-muted" style="font-size: 0.85rem;">Contact support for technical issues or emergency booking.</p>
+            <a href="#" class="nav-link" style="padding-left: 0;">📞 Emergency Line</a>
+        </div>
+    </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/patient.css' %}">
+
+<div class="dashboard-header animate-fade">
+    <div class="header-left">
+        <h2 style="margin: 0;">Schedule Consultation</h2>
+        <p class="text-muted">Unit: {{ department.name }} | AI-Assisted Recommendation</p>
+    </div>
+    <div class="header-right">
+        <a href="{% url 'patient_dashboard' %}" class="btn btn-outline">Back to Dashboard</a>
+    </div>
+</div>
+
+<section class="admin-form-container animate-fade">
+    <div class="card" style="padding: 3rem;">
+        <div style="border-left: 4px solid var(--primary); padding-left: 1.5rem; margin-bottom: 2.5rem;">
+            <h3 style="margin: 0; color: var(--primary);">Patient Information Form</h3>
+            <p class="text-muted" style="margin-top: 0.5rem; font-size: 0.9rem;">Your request will be reviewed by the specialized department.</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="patient_name" class="form-label">Patient Legal Name</label>
+                <input type="text" id="patient_name" name="patient_name" required value="{{ user.username }}"
+                    placeholder="Enter full name of patient" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="doctor" class="form-label">Available Specialist</label>
+                <select id="doctor" name="doctor" required class="form-control">
+                    <option value="" disabled selected>Select a medical professional...</option>
+                    {% for doctor in doctors %}
+                    <option value="{{ doctor.id }}">Dr. {{ doctor.name }} ({{ doctor.specialization }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="date" class="form-label">Consultation Date</label>
+                    <input type="date" id="date" name="date" required class="form-control">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="time" class="form-label">Preferred Time</label>
+                    <input type="time" id="time" name="time" required class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="symptoms" class="form-label">Reason for Visit / Detailed Symptoms</label>
+                <textarea id="symptoms" name="symptoms" rows="4" placeholder="Please provide specific details about your current health concern..."
+                    class="form-control"></textarea>
+            </div>
+
+            <div class="action-btns" style="margin-top: 3rem;">
+                <button type="submit" class="btn btn-primary" style="flex: 2; padding: 1.25rem;">Confirm Appointment Request</button>
+                <a href="{% url 'patient_dashboard' %}" class="btn btn-outline" style="flex: 1;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

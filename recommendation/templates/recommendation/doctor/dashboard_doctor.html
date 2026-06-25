@@ -1,0 +1,116 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/doctor.css' %}">
+
+<div class="doctor-welcome animate-fade">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.5rem;">
+        <div>
+            <h2 style="margin: 0;">Doctor Portal</h2>
+            <p class="text-muted">Specialist: Dr. {{ doctor.full_name }} | {{ doctor.specialization }}</p>
+        </div>
+        <div class="action-btns">
+            <a href="{% url 'doctor_history' %}" class="btn btn-outline">📋 Full Patient History</a>
+            <a href="{% url 'logout' %}" class="btn btn-danger btn-small">Sign Out</a>
+        </div>
+    </div>
+</div>
+
+<!-- Analytics Cards -->
+<div class="doctor-stats animate-fade">
+    <div class="card doctor-stat-card success">
+        <div class="stat-icon">✅</div>
+        <span class="stat-label">Treated</span>
+        <p class="stat-value" style="color: #15803d;">{{treated_count}}</p>
+        <span class="text-muted" style="font-size: 0.75rem;">Total Satisfied Patients</span>
+    </div>
+    <div class="card doctor-stat-card info">
+        <div class="stat-icon">📅</div>
+        <span class="stat-label">Upcoming</span>
+        <p class="stat-value" style="color: #1d4ed8;">{{accepted_count}}</p>
+        <span class="text-muted" style="font-size: 0.75rem;">Scheduled Consultations</span>
+    </div>
+    <div class="card doctor-stat-card warning">
+        <div class="stat-icon">⏳</div>
+        <span class="stat-label">Pending</span>
+        <p class="stat-value" style="color: #b45309;">{{pending_count}}</p>
+        <span class="text-muted" style="font-size: 0.75rem;">Awaiting Data Review</span>
+    </div>
+    <div class="card doctor-stat-card danger">
+        <div class="stat-icon">❌</div>
+        <span class="stat-label">Declined</span>
+        <p class="stat-value" style="color: #b91c1c;">{{rejected_count}}</p>
+        <span class="text-muted" style="font-size: 0.75rem;">Consultations Declined</span>
+    </div>
+</div>
+
+<div class="doctor-dashboard-grid animate-fade">
+    <!-- Upcoming Appointments -->
+    <div class="main-content">
+        <div class="card appointment-table-card">
+            <div class="table-header">
+                <h3 style="margin: 0;">Immediate Schedule</h3>
+                <span class="badge badge-info">Today's List</span>
+            </div>
+            
+            {% if upcoming %}
+            <div class="table-container" style="box-shadow: none; border-radius: 0;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patient Details</th>
+                            <th>Preferred Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appt in upcoming %}
+                        <tr>
+                            <td>
+                                <div style="font-weight: 700; color: var(--text-main);">{{appt.patient.full_name}}</div>
+                                <div class="text-muted" style="font-size: 0.8rem;">{{appt.symptoms|truncatechars:40}}</div>
+                            </td>
+                            <td>
+                                <span class="badge badge-info">{{appt.appointment_time}}</span>
+                            </td>
+                            <td>
+                                <a href="{% url 'doctor_action' appt.id 'completed' %}" class="action-chip chip-complete">Mark Treated</a>
+                            </td>
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div style="padding: 4rem; text-align: center; color: var(--text-light);">
+                <p>No upcoming appointments for the immediate schedule.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Doctor Profile Info -->
+    <aside class="sidebar-content">
+        <div class="card glass-card" style="border: none;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                {% if doctor.image %}
+                <img src="{{ doctor.image.url }}" alt="{{ doctor.full_name }}" style="width: 100px; height: 100px; border-radius: 1.5rem; object-fit: cover; margin-bottom: 1rem; border: 4px solid white; box-shadow: var(--shadow-md);">
+                {% else %}
+                <div style="width: 100px; height: 100px; border-radius: 1.5rem; background: var(--primary-soft); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 3rem;">👨‍⚕️</div>
+                {% endif %}
+                <h4 style="margin: 0;">Dr. {{doctor.full_name}}</h4>
+                <p class="text-muted" style="font-size: 0.9rem;">{{doctor.department.name}} Dept.</p>
+            </div>
+            
+            <div style="background: #f8fafc; border-radius: 1rem; padding: 1.25rem;">
+                <p style="font-size: 0.85rem; margin-bottom: 0.5rem;"><strong>Current Availability:</strong></p>
+                <p class="text-muted" style="font-size: 0.85rem; line-height: 1.5;">{{doctor.availability}}</p>
+            </div>
+            
+            <a href="{% url 'user_profile' %}" class="btn btn-outline btn-small" style="width: 100%; margin-top: 2rem;">Edit Profile Info</a>
+        </div>
+    </aside>
+</div>
+{% endblock %}

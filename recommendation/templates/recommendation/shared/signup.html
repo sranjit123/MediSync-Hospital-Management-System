@@ -1,0 +1,176 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/shared.css' %}">
+
+<div class="page-center animate-fade" style="padding: 2rem 0;">
+    <div class="card auth-card" style="max-width: 550px; width: 100%; padding: 3rem;">
+        <h2 id="form-title" style="text-align: center; margin-bottom: 2rem; color: var(--primary);">Patient Onboarding</h2>
+
+        <div class="role-toggle-group" style="display: flex; background: #f1f5f9; padding: 0.4rem; border-radius: 1rem; margin-bottom: 2.5rem;">
+            <button id="toggle-patient" class="btn btn-toggle active" style="flex: 1;" onclick="toggleRole('patient')">Patient Account</button>
+            <button id="toggle-doctor" class="btn btn-toggle" style="flex: 1;" onclick="toggleRole('doctor')">Doctor Account</button>
+        </div>
+
+        <form method="post" id="signup-form" onsubmit="return validateSignup()">
+            {% csrf_token %}
+            <input type="hidden" name="role" id="role-input" value="patient">
+
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="username" required onblur="checkUsername()" autocomplete="username" class="form-control" placeholder="Choose a unique ID">
+                <p id="username-error" class="error-msg" style="display: none; color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem;">
+                    This username is already registered.
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" id="email" name="email" required autocomplete="email" class="form-control" placeholder="yourname@example.com">
+            </div>
+
+            <div id="doctor-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="department" class="form-label">Medical Department</label>
+                    <select id="department" name="department" class="form-control">
+                        {% for dept in departments %}
+                        <option value="{{ dept.id }}">{{ dept.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="specialization" class="form-label">Clinical Specialization</label>
+                    <input type="text" id="specialization" name="specialization" placeholder="e.g. Senior Cardiologist" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 2.5rem;">
+                <label for="password" class="form-label">Create Password</label>
+                <input type="password" id="password" name="password" required autocomplete="new-password" class="form-control" placeholder="••••••••">
+                <p class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">
+                    Requirement: Min. 8 characters, alphanumeric mix.
+                </p>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.25rem;">Create Secure Account</button>
+        </form>
+
+        <div class="auth-footer" style="margin-top: 2.5rem; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 2rem;">
+            <p class="text-muted" style="font-size: 0.9rem;">
+                Already have an identity with us? 
+                <a href="{% url 'login' %}" style="color: var(--primary); font-weight: 700; margin-left: 0.5rem;">Sign In instead</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-toggle {
+        background: transparent;
+        color: #64748b;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        transition: var(--transition);
+        font-size: 0.9rem;
+    }
+    .btn-toggle.active {
+        background: white;
+        color: var(--primary);
+        box-shadow: var(--shadow-sm);
+    }
+</style>
+
+<div id="signup-data" data-role="{{ role|default:'patient' }}" data-error="{{ error|default:'' }}" style="display: none;"></div>
+
+<script>
+    function toggleRole(role) {
+        const btnPatient = document.getElementById('toggle-patient');
+        const btnDoctor = document.getElementById('toggle-doctor');
+        const roleInput = document.getElementById('role-input');
+        const doctorFields = document.getElementById('doctor-fields');
+        const formTitle = document.getElementById('form-title');
+
+        if (role === 'patient') {
+            btnPatient.classList.add('active');
+            btnDoctor.classList.remove('active');
+            roleInput.value = 'patient';
+            doctorFields.style.display = 'none';
+            formTitle.innerText = 'Patient Onboarding';
+            document.getElementById('department').required = false;
+            document.getElementById('specialization').required = false;
+        } else {
+            btnDoctor.classList.add('active');
+            btnPatient.classList.remove('active');
+            roleInput.value = 'doctor';
+            doctorFields.style.display = 'block';
+            formTitle.innerText = 'Doctor Registration';
+            document.getElementById('department').required = true;
+            document.getElementById('specialization').required = true;
+        }
+    }
+
+    function checkUsername() {
+        const username = document.getElementById('username').value;
+        const errorP = document.getElementById('username-error');
+        if (username.length < 3) return;
+
+        fetch(`/check_username/?username=${username}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_taken) {
+                    errorP.style.display = 'block';
+                    alert('Username "' + username + '" is already taken! Please select another identity.');
+                } else {
+                    errorP.style.display = 'none';
+                }
+            });
+    }
+
+    function validateSignup() {
+        const role = document.getElementById('role-input').value;
+        const u = document.getElementById('username').value;
+        const e = document.getElementById('email').value;
+        const p = document.getElementById('password').value;
+
+        if (!u || !e || !p) {
+            alert('Required: Username, Email, and Password must be provided.');
+            return false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(e)) {
+            alert('Validation Error: The provided email address is invalid.');
+            return false;
+        }
+
+        if (p.length < 8 || !/[0-9]/.test(p) || !/[a-zA-Z]/.test(p)) {
+            alert('Security Error: Password must be at least 8 characters and include both letters and numbers.');
+            return false;
+        }
+
+        if (role === 'doctor') {
+            const d = document.getElementById('department').value;
+            const s = document.getElementById('specialization').value;
+            if (!d || !s) {
+                alert('Medical Profile Required: Please select your department and state your specialization.');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    window.onload = function () {
+        const data = document.getElementById('signup-data').dataset;
+        toggleRole(data.role);
+
+        if (data.error) {
+            alert(data.error);
+        }
+    };
+</script>
+{% endblock %}

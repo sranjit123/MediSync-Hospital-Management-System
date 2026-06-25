@@ -1,0 +1,102 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/admin.css' %}">
+
+<div class="dashboard-header animate-fade">
+    <div class="header-left">
+        <h2 style="margin: 0;">Symptom & Disease Management</h2>
+        <p class="text-muted">Train the AI by linking medical diseases to specific departments and symptoms.</p>
+    </div>
+    <div class="header-right">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline">Back to Overview</a>
+    </div>
+</div>
+
+<div class="admin-quick-nav animate-fade" style="display: flex; gap: 0.75rem; margin-bottom: 3rem;">
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-outline btn-small">Overview</a>
+    <a href="{% url 'admin_appointments' %}" class="btn btn-outline btn-small">Approvals</a>
+    <a href="{% url 'admin_doctors' %}" class="btn btn-outline btn-small">Doctors</a>
+    <a href="{% url 'admin_patients' %}" class="btn btn-outline btn-small">Patients</a>
+    <a href="{% url 'admin_departments' %}" class="btn btn-outline btn-small">Departments</a>
+    <a href="{% url 'admin_diseases' %}" class="btn btn-primary btn-small">Diseases</a>
+</div>
+
+<div class="admin-layout animate-fade" style="grid-template-columns: 380px 1fr;">
+    <!-- Add Disease Form -->
+    <aside class="admin-sidebar" style="position: static; width: auto;">
+        <div class="card" style="box-shadow: none; border: none; padding: 0;">
+            <h3>Data Training</h3>
+            <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 2rem;">Adding diseases automatically enhances the AI's matching accuracy.</p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name" class="form-label">Disease Entry</label>
+                    <input type="text" id="name" name="name" required class="form-control" placeholder="e.g. Pneumonia">
+                </div>
+
+                <div class="form-group">
+                    <label for="department" class="form-label">Mapping Department</label>
+                    <select id="department" name="department" required class="form-control">
+                        <option value="">Select Target Unit</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.id }}">{{ dept.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="symptoms" class="form-label">Associated Symptoms</label>
+                    <textarea id="symptoms" name="symptoms" required placeholder="cough, fever, shallow breathing..." class="form-control" style="height: 120px;"></textarea>
+                    <small class="text-muted" style="font-size: 0.7rem;">AI uses these to weigh department recommendations.</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Update AI Model</button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Diseases List -->
+    <div class="main-content">
+        <div class="table-container" style="padding: 0; overflow: hidden;">
+            <div style="padding: 1.5rem 2rem; border-bottom: 1px solid #f1f5f9;">
+                <h3 style="margin: 0;">Neural Training Data</h3>
+            </div>
+            <table>
+                <thead>
+                    <tr class="table-header-row">
+                        <th class="column-name">Disease</th>
+                        <th class="column-dept">Mapping</th>
+                        <th class="column-symptoms">Core Symptoms</th>
+                        <th class="column-actions">Operations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for disease in diseases %}
+                    <tr class="table-data-row">
+                        <td class="cell-name" style="font-weight: 700; color: var(--text-main);">{{ disease.name }}</td>
+                        <td class="cell-dept">
+                            <span class="badge badge-info">{{ disease.department.name }}</span>
+                        </td>
+                        <td class="cell-symptoms">
+                            <span class="text-muted" style="font-size: 0.85rem;">{{ disease.symptoms|truncatechars:80 }}</span>
+                        </td>
+                        <td class="cell-actions">
+                            <a href="{% url 'delete_disease' disease.id %}"
+                                onclick="return confirm('Remove this data point from AI training?')"
+                                class="btn btn-danger btn-small">Remove Entry</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="padding: 4rem; text-align: center;" class="text-muted">No diagnostic training data available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

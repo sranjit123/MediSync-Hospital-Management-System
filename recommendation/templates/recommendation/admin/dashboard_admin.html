@@ -1,0 +1,60 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/admin.css' %}">
+
+<div class="dashboard-header animate-fade">
+    <div class="header-left">
+        <h2 style="margin: 0;">Admin Management Console</h2>
+        <p class="text-muted">Welcome back. Here's what's happening today.</p>
+    </div>
+    <div class="header-right">
+        <a href="{% url 'admin_manage_admins' %}" class="btn btn-outline btn-small">Manage Admins</a>
+    </div>
+</div>
+
+<!-- Admin Quick Navigation -->
+<nav class="admin-sidebar-nav" style="display: flex; gap: 0.75rem; margin-bottom: 3rem; overflow-x: auto; padding-bottom: 0.5rem;">
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-primary btn-small">Overview</a>
+    <a href="{% url 'admin_appointments' %}" class="btn btn-outline btn-small">Approvals</a>
+    <a href="{% url 'admin_doctors' %}" class="btn btn-outline btn-small">Doctors</a>
+    <a href="{% url 'admin_patients' %}" class="btn btn-outline btn-small">Patients</a>
+    <a href="{% url 'admin_departments' %}" class="btn btn-outline btn-small">Departments</a>
+    <a href="{% url 'admin_diseases' %}" class="btn btn-outline btn-small">Diseases</a>
+</nav>
+
+<div class="admin-card-grid animate-fade">
+    <div class="card admin-card animate-fade">
+        <span class="stat-label">Departments</span>
+        <p class="stat-value">{{ department_count }}</p>
+        <a href="{% url 'admin_departments' %}" class="btn btn-outline btn-small" style="width: 100%;">Configure Depts</a>
+    </div>
+    <div class="card admin-card animate-fade" style="border-top-color: var(--success);">
+        <span class="stat-label">Total Doctors</span>
+        <p class="stat-value">{{ doctor_count }}</p>
+        <a href="{% url 'admin_doctors' %}" class="btn btn-outline btn-small" style="width: 100%;">Specialist List</a>
+    </div>
+    <div class="card admin-card animate-fade" style="border-top-color: var(--warning);">
+        <span class="stat-label">Registered Patients</span>
+        <p class="stat-value">{{ patient_count }}</p>
+        <a href="{% url 'admin_patients' %}" class="btn btn-outline btn-small" style="width: 100%;">Manage Records</a>
+    </div>
+    <div class="card admin-card animate-fade" style="border-top-color: var(--danger);">
+        <span class="stat-label">Pending Reviews</span>
+        <p class="stat-value">{{ pending_count }}</p>
+        <a href="{% url 'admin_appointments' %}" class="btn btn-outline btn-small" style="width: 100%;">Action Required</a>
+    </div>
+</div>
+
+<section class="card glass-card animate-fade" style="border: none; padding: 2.5rem;">
+    <h3>System Quick Actions</h3>
+    <p class="text-muted" style="margin-bottom: 2rem;">Manage core system settings and medical data.</p>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="{% url 'admin_add_doctor' %}" class="btn btn-primary">+ Add New Doctor</a>
+        <a href="{% url 'admin_add_patient' %}" class="btn btn-secondary">+ Add Patient</a>
+        <a href="{% url 'admin_diseases' %}" class="btn btn-outline">Medical Data Sync</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/public.css' %}">
+
+<!-- Hero Section -->
+<section class="hero-section animate-fade">
+    <div class="hero-content">
+        <h1 class="hero-title">Caring for Your Health, <br>Leading with AI</h1>
+        <p class="hero-subtitle">Experience world-class healthcare powered by advanced AI specialist recommendations. Fast, reliable, and personalized for you.</p>
+        <div class="hero-btns">
+            <a href="{% url 'signup_patient' %}" class="btn btn-primary" style="background: white; color: var(--primary);">Get Started as Patient</a>
+            <a href="{% url 'find_specialist' %}" class="btn btn-outline" style="border-color: white; color: white;">Try AI Symptom Checker</a>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Counter Section -->
+<div class="stats-container">
+    <div class="stat-card" style="border-bottom-color: var(--primary);">
+        <span class="stat-number">{{ stats.department_count }}</span>
+        <p class="stat-label">Specialized Departments</p>
+    </div>
+    <div class="stat-card" style="border-bottom-color: var(--success);">
+        <span class="stat-number">{{ stats.doctor_count }}</span>
+        <p class="stat-label">Elite Specialists</p>
+    </div>
+    <div class="stat-card" style="border-bottom-color: var(--warning);">
+        <span class="stat-number">{{ stats.patient_count }}+</span>
+        <p class="stat-label">Registered Patients</p>
+    </div>
+    <div class="stat-card" style="border-bottom-color: var(--danger);">
+        <span class="stat-number">{{ stats.successful_matches }}</span>
+        <p class="stat-label">AI Success Matches</p>
+    </div>
+</div>
+
+<!-- Services Section -->
+<section class="features-section">
+    <div class="section-header">
+        <h2 class="section-title">How High-Tech Healthcare Works</h2>
+    </div>
+    <div class="features-grid">
+        <div class="card feature-card">
+            <div class="feature-icon">📝</div>
+            <h3>1. Describe Symptoms</h3>
+            <p class="text-muted">Type in what you're feeling. Our AI understands natural language just like a doctor would.</p>
+        </div>
+        <div class="card feature-card">
+            <div class="feature-icon">⚙️</div>
+            <h3>2. AI Processing</h3>
+            <p class="text-muted">TF-IDF and Cosine Similarity algorithms match your symptoms to specialized departments.</p>
+        </div>
+        <div class="card feature-card">
+            <div class="feature-icon">🩺</div>
+            <h3>3. Meet Specialist</h3>
+            <p class="text-muted">Instantly get a list of doctors ready to treat you. Book your consultation within seconds.</p>
+        </div>
+    </div>
+</section>
+
+<!-- All Departments Section -->
+<section id="departments" class="features-section">
+    <div class="section-header">
+        <h2 class="section-title">Explore All Medical Departments</h2>
+    </div>
+    <div class="grid-auto-fit">
+        {% for dept in departments %}
+        <div class="card dept-card">
+            <h4 style="color: var(--primary);">{{ dept.name }}</h4>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0.5rem 0;">{{ dept.description|truncatechars:100 }}</p>
+            <p style="font-weight: 600; color: var(--primary); font-size: 0.85rem;">{{ dept.doctors.count }} Specialists Available</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Specialists Section -->
+<section class="features-section">
+    <div class="section-header">
+        <h2 class="section-title">Our Medical Specialists</h2>
+    </div>
+    <div class="grid-auto-fit">
+        {% for doctor in doctors %}
+        <div class="card doctor-card">
+            <div class="doctor-image-wrapper">
+                {% if doctor.image %}
+                <img src="{{ doctor.image.url }}" alt="{{ doctor.name }}" class="doctor-img">
+                {% elif doctor.user and doctor.user.profile.image %}
+                <img src="{{ doctor.user.profile.image.url }}" alt="{{ doctor.name }}" class="doctor-img">
+                {% else %}
+                <div class="feature-icon">👨‍⚕️</div>
+                {% endif %}
+            </div>
+            <div class="doctor-info">
+                <h4 style="margin: 0;">Dr. {{doctor.name}}</h4>
+                <p style="color: var(--primary); font-weight: 600; margin: 0.25rem 0;">{{doctor.specialization}}</p>
+                <p class="text-muted" style="font-size: 0.85rem;">{{doctor.department.name}} Department</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Info Section -->
+<div class="trust-split">
+    <div>
+        <h2 style="margin-bottom: 2rem;">Why Trust Our AI-Powered Hospital?</h2>
+        <div class="trust-item">
+            <div class="trust-icon">✅</div>
+            <div>
+                <h4 style="margin: 0;">Verified Specialists</h4>
+                <p class="text-muted" style="margin: 0;">Each doctor is board-certified and manually verified.</p>
+            </div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-icon">⚡</div>
+            <div>
+                <h4 style="margin: 0;">Instant Matching</h4>
+                <p class="text-muted" style="margin: 0;">No more waiting to know which department you need.</p>
+            </div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-icon">🛡️</div>
+            <div>
+                <h4 style="margin: 0;">Privacy First</h4>
+                <p class="text-muted" style="margin: 0;">Your medical data is encrypted and handled securely.</p>
+            </div>
+        </div>
+    </div>
+    <div class="card glass-card" style="padding: 3rem;">
+        <h3 style="margin-top: 0;">Operating Hours</h3>
+        <div style="margin-top: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #e2e8f0;">
+                <span>Monday - Friday</span>
+                <span style="font-weight: 600;">8:00 AM - 9:00 PM</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #e2e8f0;">
+                <span>Saturday</span>
+                <span style="font-weight: 600;">9:00 AM - 5:00 PM</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0;">
+                <span>Sunday</span>
+                <span style="color: var(--danger); font-weight: 600;">Emergency Only</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<section class="cta-banner">
+    <h2>Ready to prioritize your health?</h2>
+    <p>Join thousands of patients who trust our AI-powered medical recommendation system for faster, smarter care.</p>
+    <a href="{% url 'signup_patient' %}" class="btn btn-primary" style="padding: 1rem 4rem; font-size: 1.1rem; background: white; color: var(--text-main);">Create Your Free Account</a>
+</section>
+{% endblock %}

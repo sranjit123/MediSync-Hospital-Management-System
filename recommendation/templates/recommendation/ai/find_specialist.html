@@ -1,0 +1,100 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/public.css' %}">
+
+<section class="admin-form-container animate-fade">
+    <div class="card result-card" style="padding: 3rem; border-top-width: 8px;">
+        <div class="result-header">
+            <h2 style="color: var(--primary); margin-top: 0;">AI Specialist Assistant</h2>
+            <p class="text-muted">Describe your symptoms in natural language. Our neural-matching algorithm will connect you with the most suitable medical department.</p>
+        </div>
+
+        <form method="post" action="" id="ai-form" onsubmit="handleAiSubmit()">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="symptoms" class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                    How are you feeling?
+                    <span id="char-count" class="badge badge-info">0 chars</span>
+                </label>
+                
+                <div style="position: relative;">
+                    <textarea id="symptoms" name="symptoms" rows="6"
+                        placeholder="Describe your symptoms in detail (e.g., 'I have been experiencing sharp headaches and occasional dizziness for two days...')"
+                        oninput="updateCount()"
+                        class="form-control"
+                        style="resize: none; font-size: 1.125rem; line-height: 1.6;"></textarea>
+                    
+                    <div id="ai-tip" style="margin-top: 0.75rem; color: var(--primary); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; opacity: 0;">
+                        <span>✨</span> The more detail you provide, the more accurate the recommendation!
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%; padding: 1.25rem; font-size: 1.1rem; box-shadow: var(--shadow-lg);">
+                Analyze Symptoms & Find Specialists
+            </button>
+        </form>
+    </div>
+
+    <div class="card glass-card animate-fade" style="margin-top: 2.5rem; border: none;">
+        <h3>How it works</h3>
+        <p class="text-muted" style="margin-bottom: 2rem;">Our system uses TF-IDF vectorization and Cosine Similarity to find the mathematical match between your keywords and our medical database.</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📝</div>
+                <h5 style="margin: 0;">Input</h5>
+                <p class="text-muted" style="font-size: 0.85rem;">Securely enter your symptoms</p>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚙️</div>
+                <h5 style="margin: 0;">Process</h5>
+                <p class="text-muted" style="font-size: 0.85rem;">AI analyzes keywords and context</p>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🩺</div>
+                <h5 style="margin: 0;">Match</h5>
+                <p class="text-muted" style="font-size: 0.85rem;">Get mapped to elite specialists</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function updateCount() {
+        const text = document.getElementById('symptoms').value;
+        const charCount = document.getElementById('char-count');
+        const aiTip = document.getElementById('ai-tip');
+        
+        charCount.innerText = text.length + ' chars';
+        
+        if (text.length > 5) {
+            aiTip.style.opacity = '1';
+        } else {
+            aiTip.style.opacity = '0';
+        }
+    }
+
+    function handleAiSubmit() {
+        const btn = document.getElementById('submit-btn');
+        btn.innerHTML = '<span class="loading-pulse">Analyzing Symptoms...</span>';
+        btn.disabled = true;
+        btn.style.opacity = '0.7';
+        btn.style.cursor = 'wait';
+    }
+</script>
+
+<style>
+    .loading-pulse {
+        animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+        0% { opacity: 0.4; }
+        50% { opacity: 1; }
+        100% { opacity: 0.4; }
+    }
+</style>
+{% endblock %}

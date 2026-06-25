@@ -1,0 +1,119 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/shared.css' %}">
+
+<div class="page-center animate-fade">
+    <div class="card auth-card" style="max-width: 480px; width: 100%; padding: 3rem;">
+        <div class="auth-header" style="text-align: center; margin-bottom: 2.5rem;">
+            <h2 style="margin: 0; color: var(--primary);">Welcome Back</h2>
+            <p class="text-muted">Enter your credentials to access your secure portal.</p>
+        </div>
+
+        <form method="post" id="login-form" onsubmit="return validateLogin()">
+            {% csrf_token %}
+            
+            <div class="role-selector" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 2rem;">
+                <label class="role-option">
+                    <input type="radio" name="role" value="patient" checked style="display: none;">
+                    <div class="role-box">Patient</div>
+                </label>
+                <label class="role-option">
+                    <input type="radio" name="role" value="doctor" style="display: none;">
+                    <div class="role-box">Doctor</div>
+                </label>
+                <label class="role-option">
+                    <input type="radio" name="role" value="admin" style="display: none;">
+                    <div class="role-box">Admin</div>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="username" required placeholder="Your unique username" class="form-control">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 2.5rem;">
+                <label for="password" class="form-label">Secure Password</label>
+                <input type="password" id="password" name="password" required placeholder="••••••••" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.25rem;">Sign In to Account</button>
+        </form>
+
+        <div class="auth-footer" style="margin-top: 2.5rem; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 2rem;">
+            <p class="text-muted" style="font-size: 0.9rem;">
+                Don't have an account yet? 
+                <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 0.75rem;">
+                    <a href="{% url 'signup_patient' %}" class="btn btn-outline btn-small">Join as Patient</a>
+                    <a href="{% url 'signup_doctor' %}" class="btn btn-outline btn-small">Join as Doctor</a>
+                </div>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .role-option input:checked + .role-box {
+        border-color: var(--primary);
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-weight: 700;
+    }
+    .role-box {
+        text-align: center;
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.75rem;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 0.9rem;
+    }
+    .role-box:hover {
+        border-color: #cbd5e1;
+    }
+</style>
+
+<div id="auth-data" data-error="{{ error_msg|default:'' }}" style="display: none;"></div>
+
+<script>
+    function validateLogin() {
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+        if (!u || !p) {
+            alert('Please provide both username and password.');
+            return false;
+        }
+        return true;
+    }
+
+    window.onload = function () {
+        const error = document.getElementById('auth-data').dataset.error;
+        if (error) {
+            alert(error);
+        }
+    };
+</script>
+
+<script>
+    function validateLogin() {
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+        if (!u || !p) {
+            alert('Please fill in both username and password.');
+            return false;
+        }
+        return true;
+    }
+
+    // Show server-side login errors in a popup
+    window.onload = function () {
+        const error = document.getElementById('auth-data').dataset.error;
+        if (error) {
+            alert(error);
+        }
+    };
+</script>
+{% endblock %}

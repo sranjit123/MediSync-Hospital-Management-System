@@ -1,0 +1,66 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/admin.css' %}">
+
+<div class="dashboard-header animate-fade">
+    <div class="header-left">
+        <h2 style="margin: 0;">Specialist Directory</h2>
+        <p class="text-muted">View and manage medical specialists across all departments.</p>
+    </div>
+    <div class="header-right">
+        <a href="{% url 'admin_add_doctor' %}" class="btn btn-primary">+ Add New Specialist</a>
+    </div>
+</div>
+
+<div class="admin-quick-nav animate-fade" style="display: flex; gap: 0.75rem; margin-bottom: 3rem;">
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-outline btn-small">Overview</a>
+    <a href="{% url 'admin_appointments' %}" class="btn btn-outline btn-small">Approvals</a>
+    <a href="{% url 'admin_doctors' %}" class="btn btn-primary btn-small">Doctors</a>
+    <a href="{% url 'admin_patients' %}" class="btn btn-outline btn-small">Patients</a>
+    <a href="{% url 'admin_departments' %}" class="btn btn-outline btn-small">Departments</a>
+</div>
+
+<div class="table-container animate-fade">
+    {% if doctors %}
+    <table>
+        <thead>
+            <tr class="table-header-row">
+                <th class="column-doctor">Doctor Profile</th>
+                <th class="column-dept">Department</th>
+                <th class="column-spec">Specialization</th>
+                <th class="column-avail">Availability</th>
+                <th class="column-actions">Operations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doctor in doctors %}
+            <tr class="table-data-row">
+                <td class="cell-doctor">
+                    <div style="font-weight: 700; color: var(--text-main);">Dr. {{ doctor.full_name }}</div>
+                    <div class="text-muted" style="font-size: 0.75rem;">ID: {{ doctor.username }}</div>
+                </td>
+                <td class="cell-dept">{{ doctor.department.name }}</td>
+                <td class="cell-spec">
+                    <span class="badge badge-info">{{ doctor.specialization }}</span>
+                </td>
+                <td class="cell-avail">{{ doctor.availability }}</td>
+                <td class="cell-actions">
+                    <a href="{% url 'delete_doctor' doctor.id %}"
+                        onclick="return confirm('Are you sure you want to remove this doctor from the system?')"
+                        class="btn btn-danger btn-small">Delete Profile</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="padding: 5rem; text-align: center; color: var(--text-light);">
+        <p>No specialists have been registered in the system database yet.</p>
+        <a href="{% url 'admin_add_doctor' %}" class="btn btn-primary" style="margin-top: 1.5rem;">Register First Doctor</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS linking -->
+<link rel="stylesheet" href="{% static 'recommendation/styles/admin.css' %}">
+
+<div class="dashboard-header animate-fade">
+    <div class="header-left">
+        <h2 style="margin: 0;">System Administrators</h2>
+        <p class="text-muted">Manage system access and oversight roles.</p>
+    </div>
+    <div class="header-right">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline">Back to Overview</a>
+    </div>
+</div>
+
+<div class="admin-layout animate-fade" style="grid-template-columns: 350px 1fr;">
+    <!-- Add Admin Form -->
+    <aside class="admin-sidebar" style="position: static; width: auto;">
+        <div class="card" style="box-shadow: none; border: none; padding: 0;">
+            <h3>Add New Admin</h3>
+            <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 2rem;">Authorized to manage doctors and system data.</p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="full_name" class="form-label">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" required placeholder="Administrator Name" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" required class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" name="email" required class="form-control" placeholder="admin@hospital.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Initial Password</label>
+                    <input type="password" id="password" name="password" required class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create Account</button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Current Admins Table -->
+    <div class="main-content">
+        <div class="table-container">
+            <h3 style="margin-bottom: 2rem; padding: 0.5rem 1rem;">Registered Administrators</h3>
+            <table>
+                <thead>
+                    <tr class="table-header-row">
+                        <th class="column-name">Full Name</th>
+                        <th class="column-user">Username</th>
+                        <th class="column-email">Email ID</th>
+                        <th class="column-date">Joined Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for admin in admins %}
+                    <tr class="table-data-row">
+                        <td class="cell-name" style="font-weight: 600;">{{admin.full_name}}</td>
+                        <td class="cell-user">{{admin.username}}</td>
+                        <td class="cell-email">{{admin.email}}</td>
+                        <td class="cell-date">
+                            <span class="badge badge-info">{{admin.date_joined|date:"M d, Y"}}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="form-data" data-error="{{ error|default:'' }}" style="display: none;"></div>
+
+<script>
+    window.onload = function () {
+        const error = document.getElementById('form-data').dataset.error;
+        if (error) {
+            alert(error);
+        }
+    };
+</script>
+{% endblock %}

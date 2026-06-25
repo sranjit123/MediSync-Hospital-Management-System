@@ -1,0 +1,67 @@
+/* Premium Doctor Dashboard Styles */
+
+.doctor-dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 2rem;
+}
+
+.doctor-welcome {
+    margin-bottom: 2.5rem;
+}
+
+.doctor-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.doctor-stat-card {
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    text-align: center;
+}
+
+.doctor-stat-card.success { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.doctor-stat-card.info { background: #eff6ff; border: 1px solid #bfdbfe; }
+.doctor-stat-card.warning { background: #fffbeb; border: 1px solid #fef3c7; }
+.doctor-stat-card.danger { background: #fef2f2; border: 1px solid #fecaca; }
+
+.stat-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Appointment Table */
+.appointment-table-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.table-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Action Chips */
+.action-chip {
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.chip-accept { background: var(--success); color: white; }
+.chip-reject { background: var(--danger); color: white; }
+.chip-complete { background: var(--info); color: white; }
+
+@media (max-width: 1024px) {
+    .doctor-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}

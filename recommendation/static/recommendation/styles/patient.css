@@ -1,0 +1,97 @@
+/* Premium Patient Dashboard Styles */
+
+.patient-dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+}
+
+.patient-welcome {
+    margin-bottom: 2.5rem;
+}
+
+.search-section {
+    margin-bottom: 3rem;
+}
+
+.doctor-scroller {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding: 1rem 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.doctor-scroller::-webkit-scrollbar {
+    height: 6px;
+}
+
+.doctor-scroller::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+.mini-doctor-card {
+    min-width: 280px;
+    padding: 0;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.mini-doctor-image {
+    height: 160px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mini-doctor-info {
+    padding: 1.25rem;
+}
+
+/* History & Status */
+.appointment-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.appointment-item {
+    padding: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Department Badges */
+.dept-badge {
+    background: var(--primary-soft);
+    color: var(--primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* AI Recommendation Results */
+.result-card {
+    border-top: 6px solid var(--primary);
+}
+
+.result-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.result-msg {
+    color: var(--success);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 1024px) {
+    .patient-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}

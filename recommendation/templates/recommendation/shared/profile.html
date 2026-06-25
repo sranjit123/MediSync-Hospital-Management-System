@@ -1,0 +1,62 @@
+{% extends 'recommendation/shared/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'recommendation/styles/shared.css' %}">
+
+<div class="dashboard-header animate-fade">
+    <div class="header-left">
+        <h2 style="margin: 0;">Account Identity</h2>
+        <p class="text-muted">Manage your personal information and security settings.</p>
+    </div>
+    <div class="header-right">
+        {% if request.user.profile.role == 'admin' %}
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline">Dashboard Overview</a>
+        {% elif request.user.profile.role == 'doctor' %}
+            <a href="{% url 'doctor_dashboard' %}" class="btn btn-outline">Dashboard Overview</a>
+        {% else %}
+            <a href="{% url 'patient_dashboard' %}" class="btn btn-outline">Dashboard Overview</a>
+        {% endif %}
+    </div>
+</div>
+
+<section class="admin-form-container animate-fade" style="margin-top: 3rem;">
+    <div class="card profile-card" style="max-width: 600px; margin: 0 auto; padding: 4rem 3rem;">
+        <div class="profile-header" style="text-align: center; margin-bottom: 3.5rem;">
+            <div class="profile-avatar-container" style="position: relative; display: inline-block; margin-bottom: 2rem;">
+                {% if request.user.profile.image %}
+                    <img src="{{ request.user.profile.image.url }}" alt="Profile Photo" style="width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 5px solid white; box-shadow: var(--shadow-md);">
+                {% else %}
+                    <div class="avatar-placeholder" style="width: 160px; height: 160px; border-radius: 50%; background: var(--primary-soft); display: flex; align-items: center; justify-content: center; margin: 0 auto; color: var(--primary); font-size: 4rem; font-weight: 800; border: 5px solid white; box-shadow: var(--shadow-md);">
+                        {{ request.user.username|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+                <span class="badge badge-info" style="position: absolute; bottom: 5px; right: 5px; padding: 0.6rem 1.2rem; font-size: 0.75rem; border: 3px solid white;">{{ request.user.profile.role|upper }}</span>
+            </div>
+            
+            <h2 style="margin: 0; color: var(--text-main); font-size: 1.75rem;">{{ request.user.username|title }}</h2>
+            <p class="text-muted" style="margin-top: 0.25rem;">{{ request.user.email }}</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="email" class="form-label">Contact Email</label>
+                <input type="email" id="email" name="email" value="{{ request.user.email }}" required class="form-control" placeholder="your@email.com">
+                <small class="text-muted">Used for appointment notifications and security alerts.</small>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 3rem;">
+                <label for="image" class="form-label">Profile Visualization</label>
+                <div class="file-input-wrapper" style="position: relative;">
+                    <input type="file" id="image" name="image" accept="image/*" class="form-control" style="padding-top: 0.6rem;">
+                </div>
+                <small class="text-muted">Upload a professional photo (JPG, PNG).</small>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.25rem; font-size: 1.1rem;">Synchronize Profile Data</button>
+        </form>
+    </div>
+</section>
+{% endblock %}
