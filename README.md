@@ -1,4 +1,4 @@
-# MediSync: AI-Powered Hospital Management System
+# MediSync: Hospital Management System
 
 MediSync is a modern, professional Hospital Management System built with Django. It features a unique AI-driven specialist recommendation engine that uses Natural Language Processing (NLP) to match patient symptoms with the most appropriate medical departments.
 
